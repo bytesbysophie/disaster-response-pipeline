@@ -19,7 +19,7 @@
 
 3. Go to http://0.0.0.0:3001/ (alternatively: http://localhost:3001/) to access the web app, that should look like this:
 <br><br>
-[[https://github.com/bytesbysophie/disaster-response-pipeline/master/app/app_screenshot.png|alt=app]]
+<img src="https://raw.githubusercontent.com/bytesbysophie/disaster-response-pipeline/master/app/app_screenshot.PNG"/>
 
 ## Project Motivation and Description <a name="Project-Motivation"></a>
 The goal of this project is to create a web app where an emergency worker can input messages and receive a machine learning based classification of the message in terms of what kind of help is needed.

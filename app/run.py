@@ -1,5 +1,6 @@
 import json
 import plotly
+import numpy
 import pandas as pd
 
 from nltk.stem import WordNetLemmatizer
@@ -7,7 +8,7 @@ from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Pie
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -26,11 +27,11 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('messages', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -38,13 +39,19 @@ model = joblib.load("../models/your_model_name.pkl")
 @app.route('/index')
 def index():
     
-    # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
+    # extract data for first graph
+    genre_counts = df.groupby('genre').count()['message'].sort_values(ascending=False)
     genre_names = list(genre_counts.index)
     
+    # extract data for second graph
+    categories_counts =  df.iloc[:,4:].sum().sort_values(ascending=True)[-10:]
+    categories_names = categories_counts.index
+
+    # extract data for third graph
+    related_values = [df['related'].sum(), df.shape[0]]
+    related_labels = ['related', 'not related']
+
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -63,7 +70,41 @@ def index():
                     'title': "Genre"
                 }
             }
-        }
+        },
+        {
+            'data': [
+                Bar(
+                    y=categories_names,
+                    x=categories_counts,
+                    orientation='h'
+                )
+            ],
+
+            'layout': {
+                'title': '10 Most common Message Categories',
+                'xaxis': {
+                    'title': "Count"
+                },
+                'margin': {
+                    'l': 100
+                }        
+            }
+        },
+        {
+            'data': [
+                Pie(
+                    labels=related_labels, 
+                    values=related_values,
+                    hole=.2,
+                    scalegroup='one'
+                )
+            ],
+
+            'layout': {
+                'title': 'Related vs. Unrelated Messages',
+                'autosize': True,
+            }
+        },
     ]
     
     # encode plotly graphs in JSON

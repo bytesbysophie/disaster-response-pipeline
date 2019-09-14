@@ -41,7 +41,9 @@
                 <form action="/go" method="get">
                     <input type="text" class="form-control form-control-lg" name="query" placeholder="Enter a message to classify">
                     <div class="col-lg-offset-5">
-                        <button type="submit" class="btn btn-lg btn-success">Classify Message</button>
+                        <div class="row" style="margin-top: 10px">
+                            <button type="submit" class="btn btn-lg btn-success">Classify Message</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -58,10 +60,16 @@
             <h1 class="text-center">Overview of Training Dataset</h1>
         </div>
     {% endblock %}
+        <div class="container">
+            <div class="row">
+                {% for id in ids %}
+                    <div class="col-lg-4">
+                        <div class="row" id="{{id}}"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
 
-    {% for id in ids %}
-        <div id="{{id}}"></div>
-    {% endfor %}
 </div>
 
 <script type="text/javascript">
